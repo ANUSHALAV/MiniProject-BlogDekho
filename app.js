@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const bcrypt = require('bcrypt');
 const userModel = require('./Models/user.model');
 
 const app = express();
@@ -18,6 +19,25 @@ app.get('/',(req,res)=>{
 
 app.get('/createUser',(req,res)=>{
     res.render('user');
+});
+
+app.post('/createUser',(req, res) => {
+    let { fullName, email, phone, age, password } = req.body;
+
+    bcrypt.hash(password, 10, async (err, hash) => {
+        let newUser = await userModel.create({
+            fullName,
+            email,
+            phone,
+            age,
+            password:hash
+        });
+        if (newUser) {
+            res.render('index');
+        } else {
+            res.send('Something went wrong');
+        }
+    })
 });
 
 app.listen(3000);
