@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const userModel = require('./Models/user.model');
 
 const app = express();
@@ -38,6 +39,26 @@ app.post('/createUser',(req, res) => {
             res.send('Something went wrong');
         }
     })
+});
+
+app.post('/login',async (req,res)=>{
+    const {email,password}= req.body;
+
+    const user = await userModel.findOne({email});
+    if(user){
+        const hashPassword = user.password;
+        bcrypt.compare(password,hashPassword,(err,result)=>{
+            if(result){
+                const token= jwt.sign({email : user.email},'secretKey');
+                res.cookie('jwt',token);
+                res.send("dfjlsdjfklsjd");
+            }else{  
+                res.send("Something went wrong1");
+            }
+        });
+    }else{
+        res.send("Something went wrong2");
+    }
 });
 
 app.listen(3000);
