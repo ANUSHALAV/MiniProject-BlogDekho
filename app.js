@@ -7,56 +7,66 @@ const userModel = require('./Models/user.model');
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({extended:true}));
-app.use(express.static(path.join(__dirname,'public')));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.set('view engine' , 'ejs');
+app.set('view engine', 'ejs');
 
 
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
     res.render('index');
 });
 
-app.get('/createUser',(req,res)=>{
+app.get('/createUser', (req, res) => {
     res.render('user');
 });
 
-app.post('/createUser',(req, res) => {
+app.post('/createUser', (req, res) => {
     let { fullName, email, phone, age, password } = req.body;
 
-    bcrypt.hash(password, 10, async (err, hash) => {
-        let newUser = await userModel.create({
-            fullName,
-            email,
-            phone,
-            age,
-            password:hash
-        });
-        if (newUser) {
-            res.render('index');
+    bcrypt.genSalt(10, (err, salt) => {
+        if (err) {
+            return res.send('Something went wrong');
         } else {
-            res.send('Something went wrong');
+            bcrypt.hash(password, salt, (err, hash) => {
+                if (err) {
+                    return res.send('Something went wrong');
+                } else {
+                    let newUser = userModel.create({
+                        fullName,
+                        email,
+                        phone,
+                        age,
+                        password: hash
+                    })
+                    if (newUser) {
+                        res.redirect('/');
+                    } else {
+                        res.send('Something went wrong');
+                    }
+                }
+            })
         }
     })
 });
 
-app.post('/login',async (req,res)=>{
-    const {email,password}= req.body;
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
 
-    const user = await userModel.findOne({email});
-    if(user){
+    const user = await userModel.findOne({ email });
+    if (user) {
         const hashPassword = user.password;
-        bcrypt.compare(password,hashPassword,(err,result)=>{
-            if(result){
-                const token= jwt.sign({email : user.email},'secretKey');
-                res.cookie('jwt',token);
+        bcrypt.compare(password, hashPassword, (err, result) => {
+            if (result) {
+                const token = jwt.sign({ email: user.email }, 'secretKey');
+                res.cookie('jwt', token);
                 res.send("dfjlsdjfklsjd");
-            }else{  
+            } else {
                 res.send("Something went wrong1");
             }
         });
-    }else{
+    } else {
         res.send("Something went wrong2");
     }
 });
