@@ -10,23 +10,40 @@
 </head>
 
 <body>
-    <div class="bg-zinc-700 text-zinc-300 font-sans">
+    <div class="bg-zinc-700 text-zinc-300 font-sans h-screen">
         <header class="flex justify-between items-center p-4 bg-zinc-800">
             <h1 class="text-2xl font-bold">Blog Dekho</h1>
-            <nav>
+            <nav class="flex justify-between items-center">
+                <div class="text-zinc-200">
+                    <span class="mr-4">Hey, <%=user.fullName%>👋</span>
+                </div>
                 <a href="/logout" class="text-zinc-800 rounded px-3 py-2 bg-red-400">Logout</a>
             </nav>
         </header>
 
         <main class="p-6">
-            <h2 class="text-xl font-semibold mb-4">Welcome to your profile!</h2>
-            <p class="mb-4">This is a protected route. Only authenticated users can see this page.</p>
-            <p>Feel free to explore and manage your account settings.</p>
-        </main>
+            <form action="/uploadPost" method="post">
+                <div class="mb-4">
+                    <textarea class="w-md p-2 border border-zinc-400 rounded" id="content" rows="4" placeholder="What's on your mind ?"></textarea>
+                </div>
+                <button class="bg-blue-500 text-white px-4 py-2 rounded" type="submit">Create New Post</button>
+            </form>
 
-        <footer class="bg-zinc-800 text-center p-4 mt-6">
-            <p>&copy; 2023 BlogDekho. All rights reserved.</p>
-        </footer>
+           <div class="mt-5 flex justify-center items-center wrap">
+             <div class="border border-zinc-400 rounded p-4 mt-6">
+                <div class="mb-4 text-blue-300">
+                    <h2>@UserName</h2>
+                </div>
+                <p class="mb-5">This is a sample blog post content.</p>
+                <div class="mb-2">
+                    <a  href="/like" class="text-sm text-blue-400 cursor-pointer">Like</a>
+                </div>
+                <div>
+                    <span class="text-sm text-zinc-400">Posted on: 2025-01-01</span>
+                </div>
+            </div>
+           </div>
+        </main>
     </div>
 </body>
 

@@ -73,8 +73,13 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/profile',isLoggedIn, (req, res) => {
-    res.render('profile');
+app.get('/profile',isLoggedIn, async (req, res) => {
+    let user = await userModel.findOne({email : req.user.email});
+    res.render('profile',{user});
+});
+
+app.post('/uploadPost',isLoggedIn,(req,res)=>{
+
 });
 
 app.get('/logout',(req,res)=>{
@@ -82,11 +87,14 @@ app.get('/logout',(req,res)=>{
     res.redirect('/');
 });
 
+
+
 function isLoggedIn (req, res,next){
     let token = req.cookies.Token;
     if (token) {
         let data = jwt.verify(token, 'secretKey');
         if(data){
+            req.user = data;
             next();
         }
         else{
