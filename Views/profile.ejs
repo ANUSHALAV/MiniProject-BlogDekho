@@ -10,8 +10,23 @@
 </head>
 
 <body>
-    <div class="flex h-screen w-full justify-center items-center bg-zinc-700 text-zinc-300 font-sans">
-        <h1>this is the profile page</h1>
+    <div class="bg-zinc-700 text-zinc-300 font-sans">
+        <header class="flex justify-between items-center p-4 bg-zinc-800">
+            <h1 class="text-2xl font-bold">Blog Dekho</h1>
+            <nav>
+                <a href="/logout" class="text-zinc-800 rounded px-3 py-2 bg-red-400">Logout</a>
+            </nav>
+        </header>
+
+        <main class="p-6">
+            <h2 class="text-xl font-semibold mb-4">Welcome to your profile!</h2>
+            <p class="mb-4">This is a protected route. Only authenticated users can see this page.</p>
+            <p>Feel free to explore and manage your account settings.</p>
+        </main>
+
+        <footer class="bg-zinc-800 text-center p-4 mt-6">
+            <p>&copy; 2023 BlogDekho. All rights reserved.</p>
+        </footer>
     </div>
 </body>
 

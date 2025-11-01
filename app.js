@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 const userModel = require('./Models/user.model');
 
 const app = express();
@@ -9,6 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
 
 
 app.set('view engine', 'ejs');
@@ -60,8 +62,8 @@ app.post('/login', async (req, res) => {
         bcrypt.compare(password, hashPassword, (err, result) => {
             if (result) {
                 const token = jwt.sign({ email: user.email }, 'secretKey');
-                res.cookie('jwt', token);
-                res.send("dfjlsdjfklsjd");
+                res.cookie('Token', token);
+                res.redirect('/profile');
             } else {
                 res.send("Something went wrong1");
             }
@@ -70,5 +72,29 @@ app.post('/login', async (req, res) => {
         res.send("Something went wrong2");
     }
 });
+
+app.get('/profile',isLoggedIn, (req, res) => {
+    res.render('profile');
+});
+
+app.get('/logout',(req,res)=>{
+    res.clearCookie('Token');
+    res.redirect('/');
+});
+
+function isLoggedIn (req, res,next){
+    let token = req.cookies.Token;
+    if (token) {
+        let data = jwt.verify(token, 'secretKey');
+        if(data){
+            next();
+        }
+        else{
+            res.redirect("/")
+        }
+    }else{
+        res.redirect("/")
+    }
+}
 
 app.listen(3000);
