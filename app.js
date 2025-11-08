@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const userModel = require('./Models/user.model');
+const postModel = require('./Models/post.model');
 
 const app = express();
 
@@ -65,11 +66,11 @@ app.post('/login', async (req, res) => {
                 res.cookie('Token', token);
                 res.redirect('/profile');
             } else {
-                res.send("Something went wrong1");
+                res.send("Something went wrong");
             }
         });
     } else {
-        res.send("Something went wrong2");
+        res.send("Something went wrong");
     }
 });
 
@@ -78,8 +79,21 @@ app.get('/profile',isLoggedIn, async (req, res) => {
     res.render('profile',{user});
 });
 
-app.post('/uploadPost',isLoggedIn,(req,res)=>{
+app.post('/uploadPost',isLoggedIn,async (req,res)=>{
+    let {content} = req.body;
 
+    let user =  await userModel.findOne({email : req.user.email}); 
+
+    let post = await postModel.create({
+        postBy : user._id,
+        content
+    });
+    if(post){
+        await userModel.findByIdAndUpdate(user._id,{$push : {posts : post._id}});
+        res.redirect('/profile');
+    }else{
+        res.send('Something went wrong');
+    }
 });
 
 app.get('/logout',(req,res)=>{
