@@ -24,25 +24,38 @@
         <main class="p-6">
             <form action="/uploadPost" method="post">
                 <div class="mb-4">
-                    <textarea class="w-md p-2 border border-zinc-400 rounded" name="content" id="content" rows="4" placeholder="What's on your mind ?"></textarea>
+                    <textarea class="w-md p-2 border border-zinc-400 rounded" name="content" id="content" rows="4"
+                        placeholder="What's on your mind ?"></textarea>
                 </div>
                 <button class="bg-blue-500 text-white px-4 py-2 rounded" type="submit">Create New Post</button>
             </form>
 
-           <div class="mt-5 flex justify-center items-center wrap">
-             <div class="border border-zinc-400 rounded p-4 mt-6">
-                <div class="mb-4 text-blue-300">
-                    <h2>@UserName</h2>
-                </div>
-                <p class="mb-5">This is a sample blog post content.</p>
-                <div class="mb-2">
-                    <a  href="/like" class="text-sm text-blue-400 cursor-pointer">Like</a>
-                </div>
-                <div>
-                    <span class="text-sm text-zinc-400">Posted on: 2025-01-01</span>
-                </div>
+            <div class="mt-5 flex justify-center items-center wrap gap-4">
+                <% if(posts){ %>
+
+                    <% posts.forEach(post=>{%>
+                        <div class="border border-zinc-400 rounded p-4 mt-6">
+                            <div class="mb-4 text-blue-300">
+                                <h2>@UserName</h2>
+                            </div>
+                            <p class="mb-5">
+                                <%=post.content%>
+                            </p>
+                            <div class="mb-2">
+                                <a href="/like" class="text-sm text-blue-400 cursor-pointer">Like</a>
+                            </div>
+                            <div>
+                                <span class="text-sm text-zinc-400">Posted on: <%= post.createdOn %></span>
+                            </div>
+                        </div>
+
+                        <%})%>
+                                <% } else { %>
+                                    <div class="text-center text-zinc-400">
+                                        <p>No posts available.</p>
+                                    </div>
+                                    <% } %>
             </div>
-           </div>
         </main>
     </div>
 </body>
