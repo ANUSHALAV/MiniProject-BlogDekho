@@ -36,16 +36,13 @@
                     <% posts.forEach(post=>{%>
                         <div class="border border-zinc-400 rounded p-4 mt-6">
                             <div class="mb-4 text-blue-300">
-                                <h2>@UserName</h2>
+                                <h2>@<%=post.postBy.fullName%></h2>
                             </div>
                             <p class="mb-5">
                                 <%=post.content%>
                             </p>
                             <div class="mb-2">
-                                <a href="/like" class="text-sm text-blue-400 cursor-pointer">Like</a>
-                            </div>
-                            <div>
-                                <span class="text-sm text-zinc-400">Posted on: <%= post.createdOn %></span>
+                                <a href='/like/<%= post._id %>' class="text-sm text-blue-400 cursor-pointer">Like</a>
                             </div>
                         </div>
 

@@ -75,10 +75,10 @@ app.post('/login', async (req, res) => {
 });
 
 app.get('/profile',isLoggedIn, async (req, res) => {
-    let user = await userModel.findOne({email : req.user.email});
-    let posts = await postModel.find();
-    
-    res.render('profile',{user, posts});
+    let user = await userModel.findOne({email : req.user.email}).populate('posts');
+    let posts = await postModel.find().populate('postBy');
+
+    res.render('profile',{user,posts});
 });
 
 app.post('/uploadPost',isLoggedIn,async (req,res)=>{
@@ -92,6 +92,18 @@ app.post('/uploadPost',isLoggedIn,async (req,res)=>{
     });
     if(post){
         await userModel.findByIdAndUpdate(user._id,{$push : {posts : post._id}});
+        res.redirect('/profile');
+    }else{
+        res.send('Something went wrong');
+    }
+});
+
+app.get('/like/:id',isLoggedIn,async (req,res)=>{
+    let postId = req.params.id;
+    
+    let user = await userModel.findOne({email:req.user.email});
+    let post =  await postModel.findByIdAndUpdate(postId,{$push : {likes : user._id}});
+    if(post){
         res.redirect('/profile');
     }else{
         res.send('Something went wrong');
