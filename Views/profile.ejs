@@ -42,7 +42,8 @@
                                 <%=post.content%>
                             </p>
                             <div class="mb-2">
-                                <a href='/like/<%= post._id %>' class="text-sm text-blue-400 cursor-pointer">Like</a>
+                                <span><%=post.likes.length%></span>
+                                <a href='/like/<%= post._id %>' class="text-sm text-blue-400 cursor-pointer"><%=post.likes.includes(user._id)==false? "👍" :"👎"%></a>
                             </div>
                         </div>
 

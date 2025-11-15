@@ -74,61 +74,69 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/profile',isLoggedIn, async (req, res) => {
-    let user = await userModel.findOne({email : req.user.email}).populate('posts');
+app.get('/profile', isLoggedIn, async (req, res) => {
+    let user = await userModel.findOne({ email: req.user.email }).populate('posts');
     let posts = await postModel.find().populate('postBy');
 
-    res.render('profile',{user,posts});
+    res.render('profile', { user, posts });
 });
 
-app.post('/uploadPost',isLoggedIn,async (req,res)=>{
-    let {content} = req.body;
+app.post('/uploadPost', isLoggedIn, async (req, res) => {
+    let { content } = req.body;
 
-    let user =  await userModel.findOne({email : req.user.email}); 
+    let user = await userModel.findOne({ email: req.user.email });
 
     let post = await postModel.create({
-        postBy : user._id,
+        postBy: user._id,
         content
     });
-    if(post){
-        await userModel.findByIdAndUpdate(user._id,{$push : {posts : post._id}});
+    if (post) {
+        await userModel.findByIdAndUpdate(user._id, { $push: { posts: post._id } });
         res.redirect('/profile');
-    }else{
+    } else {
         res.send('Something went wrong');
     }
 });
 
-app.get('/like/:id',isLoggedIn,async (req,res)=>{
+app.get('/like/:id', isLoggedIn, async (req, res) => {
     let postId = req.params.id;
-    
-    let user = await userModel.findOne({email:req.user.email});
-    let post =  await postModel.findByIdAndUpdate(postId,{$push : {likes : user._id}});
-    if(post){
+
+    let user = await userModel.findOne({ email: req.user.email });
+
+    let post = await postModel.findOne({ _id: postId });
+
+    if (post) {
+        if (post.likes.includes(user._id)) {
+            post.likes.pull(user._id);
+        } else {
+            post.likes.push(user._id );
+        }
+        await post.save();
         res.redirect('/profile');
-    }else{
-        res.send('Something went wrong');
+    } else {
+        res.send('Post not found');
     }
 });
 
-app.get('/logout',(req,res)=>{
+app.get('/logout', (req, res) => {
     res.clearCookie('Token');
     res.redirect('/');
 });
 
 
 
-function isLoggedIn (req, res,next){
+function isLoggedIn(req, res, next) {
     let token = req.cookies.Token;
     if (token) {
         let data = jwt.verify(token, 'secretKey');
-        if(data){
+        if (data) {
             req.user = data;
             next();
         }
-        else{
+        else {
             res.redirect("/")
         }
-    }else{
+    } else {
         res.redirect("/")
     }
 }
