@@ -109,13 +109,21 @@ app.get('/like/:id', isLoggedIn, async (req, res) => {
         if (post.likes.includes(user._id)) {
             post.likes.pull(user._id);
         } else {
-            post.likes.push(user._id );
+            post.likes.push(user._id);
         }
         await post.save();
         res.redirect('/profile');
     } else {
         res.send('Post not found');
     }
+});
+
+app.get('/uploadProfile', isLoggedIn, (req, res) => {
+    res.render('uploadProfile');
+});
+
+app.post('/uploadProfileImage', isLoggedIn, (req, res) => {
+    res.send('Profile image upload functionality to be implemented');
 });
 
 app.get('/logout', (req, res) => {

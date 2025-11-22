@@ -8,6 +8,10 @@ const userSchema = new mongoose.Schema({
     phone : String,
     age :Number,
     password : String,
+    profileImage :{
+        type:String,
+        default :'defaultProfile.png'
+    },
     status :{
         type : Number,
         default : 1

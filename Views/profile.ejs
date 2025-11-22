@@ -11,11 +11,14 @@
 
 <body>
     <div class="bg-zinc-700 text-zinc-300 font-sans h-screen">
-        <header class="flex justify-between items-center p-4 bg-zinc-800">
+        <header class="flex justify-between items-center px-4 py-2 bg-zinc-800">
             <h1 class="text-2xl font-bold">Blog Dekho</h1>
             <nav class="flex justify-between items-center">
-                <div class="text-zinc-200">
-                    <span class="mr-4">Hey, <%=user.fullName%>👋</span>
+                <div class="text-zinc-200 flex items-center justify-between mr-4">
+                    <a href="/uploadProfile" class="h-16 w-16 rounded-full border-2 border-zinc-400 mr-2 overflow-hidden">
+                        <img src="/images/uploadImages/<%=user.profileImage%>" alt="user profile image" class="h-full w-full object-contain">
+                    </a>
+                    <span>Hey, <%=user.fullName%>👋</span>
                 </div>
                 <a href="/logout" class="text-zinc-800 rounded px-3 py-2 bg-red-400">Logout</a>
             </nav>
