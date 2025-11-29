@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const userModel = require('./Models/user.model');
 const postModel = require('./Models/post.model');
+const uploadFile = require('./config/multerConfig');
 
 const app = express();
 
@@ -122,8 +123,15 @@ app.get('/uploadProfile', isLoggedIn, (req, res) => {
     res.render('uploadProfile');
 });
 
-app.post('/uploadProfileImage', isLoggedIn, (req, res) => {
-    res.send('Profile image upload functionality to be implemented');
+app.post('/uploadProfileImage', isLoggedIn, uploadFile.single("profileImage"), async (req, res) => {
+    let user = await userModel.findOne({ email: req.user.email });
+    if (user) {
+        user.profileImage = req.file.filename;
+        user.save();
+        res.redirect('/profile');
+    } else {
+        res.send('User not found');
+    }
 });
 
 app.get('/logout', (req, res) => {
